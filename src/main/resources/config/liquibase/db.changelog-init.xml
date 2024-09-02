@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.28.xsd"
+        objectQuotingStrategy="QUOTE_ONLY_RESERVED_WORDS">
+    <changeSet id="1725216264931-1" author="consonni (generated)">
+        <createTable tableName="account">
+            <column name="id" type="UUID">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_account"/>
+            </column>
+            <column name="user_name" type="VARCHAR(255)"/>
+            <column name="password" type="VARCHAR(255)"/>
+            <column name="role" type="VARCHAR(255)"/>
+            <column name="created_date" type="DATETIME"/>
+        </createTable>
+    </changeSet>
+    <changeSet id="1725216264931-2" author="consonni (generated)">
+        <createTable tableName="dashboard_item">
+            <column name="id" type="UUID">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="pk_dashboard_item"/>
+            </column>
+            <column name="title" type="VARCHAR(255)"/>
+            <column name="content" type="VARCHAR(255)"/>
+            <column name="dashboard_type" type="VARCHAR(255)"/>
+            <column name="order_view" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="creation_date" type="DATETIME"/>
+            <column name="created_by" type="VARCHAR(255)"/>
+            <column name="valid_from" type="DATETIME"/>
+            <column name="valid_to" type="DATETIME"/>
+            <column name="last_update_date" type="DATETIME"/>
+            <column name="updated_by" type="VARCHAR(255)"/>
+            <column name="deleted_date" type="DATETIME"/>
+        </createTable>
+    </changeSet>
+
+</databaseChangeLog>
