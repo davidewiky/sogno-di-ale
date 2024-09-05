@@ -28,6 +28,7 @@ server:
 
 params:
   env: "DEV"
+  fileStorage: "C:/Users/consonni/git/data/"
 
 management:
   endpoints:
@@ -79,14 +80,6 @@ spring:
     url: jdbc:postgresql://localhost:5432/sognoDiAle
     username: user
     password: password
-    hikari:
-      minimum-idle: 1
-      idle-timeout: 3000
-      maximum-pool-size: 4
-      auto-commit: false
-      pool-name: HikariCorePool
-      max-lifetime: 30000
-      connection-timeout: 3000
   jpa:
     hibernate.ddl-auto: none
     generate-ddl: false

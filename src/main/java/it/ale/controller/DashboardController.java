@@ -1,5 +1,6 @@
 package it.ale.controller;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 import it.ale.service.DashboardService;
+import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @Tag(name = "Dashboard controller", description = "Dashboard info")
@@ -45,8 +47,10 @@ public class DashboardController {
 	}
 
 	@PostMapping("/create")
-	public ResponseEntity<DashboardItemDTO> save(@RequestBody DashboardItemDTO dashboardItemDTO) throws JsonProcessingException {
-		return new ResponseEntity<>(dashboardService.save(dashboardItemDTO), HttpStatus.OK);
+	public ResponseEntity<DashboardItemDTO> save(@RequestParam("file") MultipartFile file, @ModelAttribute DashboardItemDTO dashboardItem) throws IOException {
+		String fileName = dashboardService.saveAttachment(file);
+		dashboardItem.setAttachmentId(fileName);
+		return new ResponseEntity<>(dashboardService.save(dashboardItem), HttpStatus.OK);
 	}
 
 	@PutMapping("/update/{id}")
