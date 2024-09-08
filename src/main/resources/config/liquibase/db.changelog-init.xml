@@ -34,6 +34,7 @@
             <column name="last_update_date" type="DATETIME"/>
             <column name="updated_by" type="VARCHAR(255)"/>
             <column name="deleted_date" type="DATETIME"/>
+            <column name="attachment_id" type="VARCHAR(255)"/>
         </createTable>
     </changeSet>
 

@@ -25,4 +25,6 @@ public class DashboardItemDTO {
     private LocalDateTime validTo;
     private Instant lastUpdate;
     private String updatedBy;
+    private String attachmentId;
+    private String attachment;
 }

@@ -38,4 +38,5 @@ public class DashboardItem {
     private Instant lastUpdateDate;
     private String updatedBy;
     private Instant deletedDate;
+    private String attachmentId;
 }
