@@ -3,7 +3,10 @@ package it.ale.service;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -18,7 +21,9 @@ import it.ale.repository.DashboardRepository;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.internal.asm.TypeReference;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -41,11 +46,7 @@ public class DashboardService {
 		this.configParams = configParams;
 	}
 
-	public List<DashboardItem> getDashboardByType(DashboardType dashboardType) {
-		return null;
-	}
-
-	public DashboardItemDTO getById(String id) throws JsonProcessingException, ResourceNotFoundException {
+	public DashboardItemDTO getById(String id) throws ResourceNotFoundException {
 		Optional<DashboardItem> dashboardItem = dashboardRepository.findById(UUID.fromString(id));
 		if(dashboardItem.isPresent()) {
 			return mapper.map(dashboardItem.get(), DashboardItemDTO.class);
@@ -62,7 +63,7 @@ public class DashboardService {
 		return mapper.map(saved, DashboardItemDTO.class);
 	}
 
-	public DashboardItemDTO update(String id, DashboardItemDTO dto) throws ResourceNotFoundException, JsonProcessingException {
+	public DashboardItemDTO update(String id, DashboardItemDTO dto) throws ResourceNotFoundException {
 		log.info("Update item id: {}, type: {}", id, dto.getDashboardType());
 		Optional<DashboardItem> item = dashboardRepository.findById(UUID.fromString(id));
 		if (item.isEmpty()) {
@@ -82,19 +83,26 @@ public class DashboardService {
 
 	public List<DashboardItemDTO> retrieveValidItemByType(DashboardType dashboardType) {
 		log.info("Retrieve item with type: {}", dashboardType);
-		List<DashboardItem> dashboardItems = dashboardRepository.findByDashboardType(dashboardType);
+		List<DashboardItem> dashboardItems = dashboardRepository.findByDashboardTypeAndValidToGreaterThan(dashboardType, LocalDate.now().atStartOfDay());
+		return getDashboardItemDTOSWithAttach(dashboardItems);
+	}
+
+	private List<DashboardItemDTO> getDashboardItemDTOSWithAttach(List<DashboardItem> dashboardItems) {
 		dashboardItems.sort(Comparator.comparing(DashboardItem::getCreationDate).reversed());
 
 		List<DashboardItemDTO> result = new ArrayList<>();
 		dashboardItems.forEach(item -> {
-			File file = new File(configParams.getFileStorage() + item.getAttachmentId());
-			DashboardItemDTO dashboardItemDTO = mapper.map(item, DashboardItemDTO.class);
-            try {
-                dashboardItemDTO.setAttachment(Base64.getEncoder().encodeToString(Files.readAllBytes(file.toPath())));
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-			result.add(dashboardItemDTO);
+			if (StringUtils.isNotEmpty(item.getAttachmentId())) {
+				File file = new File(configParams.getFileStorage() + item.getAttachmentId());
+				DashboardItemDTO dashboardItemDTO = mapper.map(item, DashboardItemDTO.class);
+				try {
+					dashboardItemDTO.setAttachment(Base64.getEncoder().encodeToString(Files.readAllBytes(file.toPath())));
+				} catch (IOException e) {
+					throw new RuntimeException(e);
+				}
+				result.add(dashboardItemDTO);
+			}
+			result.add(mapper.map(item, DashboardItemDTO.class));
         });
 		return result;
 	}
@@ -121,5 +129,11 @@ public class DashboardService {
 		Path filePath = uploadPath.resolve(fileName);
 		attach.transferTo(filePath.toFile());
 		return fileName;
+	}
+
+	public List<DashboardItemDTO> getLastEvents(DashboardType dashboardType) {
+		log.info("Retrieve last item with type: {}", dashboardType);
+		List<DashboardItem> dashboardItems = dashboardRepository.findByDashboardTypeAndValidToLessThan(dashboardType, LocalDate.now().atStartOfDay());
+		return	getDashboardItemDTOSWithAttach(dashboardItems);
 	}
 }

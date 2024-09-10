@@ -36,11 +36,6 @@ public class DashboardController {
 		this.mapper = mapper;
 	}
 
-	/*@GetMapping(value = "/user-rights")
-	public ResponseEntity<List<UserRight>> getUserRights() {
-		return new ResponseEntity<>(accountService.getEocupUserRights(), HttpStatus.OK);
-	}*/
-
 	@GetMapping("{id}")
 	public ResponseEntity<DashboardItemDTO> getItemById(@PathVariable String id) throws ResourceNotFoundException, JsonProcessingException {
 		return new ResponseEntity<>(dashboardService.getById(id), HttpStatus.OK);
@@ -68,6 +63,12 @@ public class DashboardController {
 	@GetMapping(value = "/type/{type}")
 	public ResponseEntity<List<DashboardItemDTO>> getItem(@PathVariable String type) {
 		final List<DashboardItemDTO> result = new ArrayList<>(dashboardService.retrieveValidItemByType(DashboardType.valueOf(type)));
+		return new ResponseEntity<>(result, HttpStatus.OK);
+	}
+
+	@GetMapping(value = "/type/{type}/latest")
+	public ResponseEntity<List<DashboardItemDTO>> getLastItem(@PathVariable String type) {
+		final List<DashboardItemDTO> result = dashboardService.getLastEvents(DashboardType.valueOf(type));
 		return new ResponseEntity<>(result, HttpStatus.OK);
 	}
 
