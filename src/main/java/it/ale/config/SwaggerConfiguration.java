@@ -12,8 +12,7 @@ public class SwaggerConfiguration {
 
 	@Bean
 	  OpenAPI customOpenApi() {
-	    return new OpenAPI().info(new Info().title("EOCNET DMZ v2 API").version("0.0.0").description(
-	        "See docs on Confluence - <a href=\"https://confluence.eoc.ch\" target=\"_blank\">https://confluence.eoc.ch/</a>")
-	        .termsOfService("https://www.eoc.ch/").contact(new Contact().name("Team Pizzo di Claro")));
+	    return new OpenAPI().info(new Info().title("SOGNO DI ALE API").version("0.0.0")
+				.description("Swagger per sviluppo del BE del sito Sogno di Ale"));
 	  }
 }
