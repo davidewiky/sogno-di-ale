@@ -83,7 +83,7 @@ public class DashboardService {
 
 	public List<DashboardItemDTO> retrieveValidItemByType(DashboardType dashboardType) {
 		log.info("Retrieve item with type: {}", dashboardType);
-		List<DashboardItem> dashboardItems = dashboardRepository.findByDashboardTypeAndValidToGreaterThan(dashboardType, LocalDate.now().atStartOfDay());
+		List<DashboardItem> dashboardItems = dashboardRepository.findDashboardItemsByDashboardType(dashboardType);
 		return getDashboardItemDTOSWithAttach(dashboardItems);
 	}
 

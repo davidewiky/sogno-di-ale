@@ -41,8 +41,14 @@ public class DashboardController {
 		return new ResponseEntity<>(dashboardService.getById(id), HttpStatus.OK);
 	}
 
-	@PostMapping("/create")
-	public ResponseEntity<DashboardItemDTO> save(@RequestParam("file") MultipartFile file, @ModelAttribute DashboardItemDTO dashboardItem) throws IOException {
+	@PostMapping
+	public ResponseEntity<DashboardItemDTO> save(@RequestBody DashboardItemDTO dashboardItem) throws JsonProcessingException {
+		return new ResponseEntity<>(dashboardService.save(dashboardItem), HttpStatus.OK);
+	}
+
+	@PostMapping("/{id}")
+	public ResponseEntity<DashboardItemDTO> saveAttach(@RequestParam(value = "file") MultipartFile file, @PathVariable String id) throws IOException, ResourceNotFoundException {
+		DashboardItemDTO dashboardItem = dashboardService.getById(id);
 		String fileName = dashboardService.saveAttachment(file);
 		dashboardItem.setAttachmentId(fileName);
 		return new ResponseEntity<>(dashboardService.save(dashboardItem), HttpStatus.OK);

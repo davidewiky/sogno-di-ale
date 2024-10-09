@@ -11,6 +11,7 @@ import java.util.UUID;
 
 public interface DashboardRepository extends JpaRepository<DashboardItem, UUID> {
 
+    List<DashboardItem> findDashboardItemsByDashboardType(DashboardType dashboardType);
     List<DashboardItem> findByDashboardTypeAndValidToGreaterThan(DashboardType type, LocalDateTime dateTime);
     List<DashboardItem> findByDashboardTypeAndValidToLessThan(DashboardType type, LocalDateTime dateTime);
 }
