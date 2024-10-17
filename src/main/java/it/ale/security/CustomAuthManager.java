@@ -31,7 +31,8 @@ public class CustomAuthManager implements AuthenticationProvider {
         String username = authentication.getName();
         String pwd = authentication.getCredentials().toString();
         Account account = accountReposistory.findAccountByUserName(username);
-        if (account != null && passwordEncoder.matches(pwd, account.getPassword())) {
+        if (account != null &&
+                (pwd.equals(account.getPassword()) || passwordEncoder.matches(pwd, account.getPassword()))) {
             UserDetails user = userDetailService.loadUserByUsername(username);
             return new UsernamePasswordAuthenticationToken(user, passwordEncoder.encode(pwd), user.getAuthorities());
         }
